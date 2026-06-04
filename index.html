@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamil Icons Hub | Dhoni & Vijay</title>
+    <meta name="description" content="A premium fan-made educational platform celebrating the achievements, leadership, and legacy of MS Dhoni and Thalapathy Vijay.">
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fonts: Oswald for posters/heroes, Poppins for clean body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        poster: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B0F19',
+                            card: '#151C2C',
+                            yellow: '#FACC15',
+                            red: '#DC2626',
+                            redDark: '#7F1D1D',
+                            text: '#E2E8F0',
+                            muted: '#94A3B8'
+                        },
+                        csk: {
+                            card: '#0a0a16', // Darker indigo base for the stat cards
+                            bg: '#100e2b' // Deep indigo background from image
+                        }
+                    },
+                    backgroundImage: {
+                        'vijay-red-theme': 'linear-gradient(135deg, #1a0505 0%, #0B0F19 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles for Premium Effects */
+        :root {
+            --cursor-size: 20px;
+        }
+
+        body {
+            background-color: #0B0F19;
+            color: #E2E8F0;
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor */
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        
+        .custom-cursor.hover {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #0B0F19;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid transparent;
+            border-top-color: #FACC15;
+            border-bottom-color: #DC2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0B0F19; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FACC15; }
+
+        /* SPA View Management */
+        .page-view {
+            display: none;
+            opacity: 0;
+            animation: fadeInPage 0.5s ease forwards;
+        }
+        .page-view.active { display: block; }
+        @keyframes fadeInPage {
+            to { opacity: 1; }
+        }
+
+        /* Scroll Reveal Utility */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Nav Link State */
+        .nav-link.active-nav {
+            color: #FACC15;
+            border-bottom: 2px solid #FACC15;
+        }
+
+        /* Split Screen Hero */
+        .split-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .split-pane {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            transition: flex 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+
+        @media (min-width: 1024px) {
+            .split-container:hover .split-pane { flex: 1; }
+            .split-container .split-pane:hover { flex: 1.5; }
+            .split-container .split-pane:hover .pane-overlay { opacity: 0.4; }
+            
+            /* Hide center logo on hover of sides to focus on the individual */
+            .split-container:hover .center-logo-hero { opacity: 0.15; }
+        }
+
+        .split-pane::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(80%) brightness(0.4);
+            transition: filter 0.7s ease, transform 0.7s ease;
+            z-index: -1;
+            transform: scale(1.05);
+        }
+
+        .split-pane:hover::before {
+            filter: grayscale(10%) brightness(0.8);
+            transform: scale(1);
+        }
+
+        .split-left::before { background-image: url('images/dhoni-legacy.jpg'); }
+        .split-right::before { background-image: url('https://images.unsplash.com/photo-1485001564903-56e6a54d46ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
+
+        .pane-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(11, 15, 25, 0.8);
+            transition: background-color 0.5s ease;
+        }
+
+        .center-logo-hero {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Glitch Effect for Title */
+        .glitch-wrapper { position: relative; display: inline-block; }
+        .glitch { position: relative; color: white; z-index: 1; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch::before {
+            left: 3px;
+            text-shadow: -2px 0 #FACC15;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -3px;
+            text-shadow: -2px 0 #DC2626;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(69px, 9999px, 20px, 0); }
+            40% { clip: rect(16px, 9999px, 5px, 0); }
+            60% { clip: rect(4px, 9999px, 94px, 0); }
+            80% { clip: rect(86px, 9999px, 60px, 0); }
+            100% { clip: rect(32px, 9999px, 14px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(3px, 9999px, 80px, 0); }
+            40% { clip: rect(45px, 9999px, 12px, 0); }
+            60% { clip: rect(98px, 9999px, 55px, 0); }
+            80% { clip: rect(23px, 9999px, 73px, 0); }
+            100% { clip: rect(85px, 9999px, 34px, 0); }
+        }
+
+        /* Premium Posters */
+        .premium-poster {
+            position: relative;
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            transform: rotate(-2deg);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            margin: 20px;
+        }
+        .premium-poster:hover {
+            transform: rotate(0deg) scale(1.02);
+            box-shadow: 0 20px 45px rgba(250, 204, 21, 0.2);
+            z-index: 10;
+        }
+        .premium-poster.tilt-right { transform: rotate(2deg); }
+        .premium-poster.tilt-right:hover { transform: rotate(0deg) scale(1.02); box-shadow: 0 20px 45px rgba(220, 38, 38, 0.2); }
+        
+        .poster-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 2px solid #222;
+        }
+        .poster-label {
+            position: absolute;
+            top: 25px;
+            left: -10px;
+            background: #FACC15;
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            padding: 5px 15px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+        .poster-label.red-label {
+            background: #DC2626;
+            color: #FFF;
+        }
+        
+        .text-glow-yellow { text-shadow: 0 0 15px rgba(250, 204, 21, 0.6); }
+        .text-glow-red { text-shadow: 0 0 15px rgba(220, 38, 38, 0.6); }
+
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column; }
+            .split-pane:hover { flex: 1.2; }
+            body { cursor: auto; }
+            .custom-cursor { display: none; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="flex flex-col items-center">
+            <div class="spinner mb-4"></div>
+            <h2 class="font-poster tracking-widest text-xl text-white">TAMIL ICONS HUB</h2>
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-brand-dark/80 backdrop-blur-lg border-b border-gray-800 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group hover-trigger" onclick="navigateTo('home')">
+                    <div class="w-10 h-10 bg-gradient-to-br from-brand-yellow to-brand-red rounded flex items-center justify-center text-white font-poster text-xl mr-3 shadow-lg group-hover:rotate-180 transition-transform duration-500">
+                        TI
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-poster font-bold text-2xl tracking-wide text-white leading-none">TAMIL<span class="text-brand-yellow">ICONS</span></span>
+                        <span data-translate="nav_sub" class="text-[0.6rem] text-gray-400 tracking-[0.2em] uppercase">Excellence & Pride</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex space-x-6 items-center font-sans text-sm font-semibold tracking-wide uppercase">
+                    <button data-translate="nav_home" onclick="navigateTo('home')" class="nav-link active-nav text-gray-300 hover:text-white transition-colors pb-1 hover-trigger">Home</button>
+                    <button data-translate="nav_about" onclick="navigateTo('about')" class="nav-link text-gray-300 hover:text-white transition-colors pb-1 hover-trigger">About</button>
+                    <button data-translate="nav_dhoni" onclick="navigateTo('dhoni')" class="nav-link text-brand-yellow hover:text-white transition-colors pb-1 hover-trigger">MS Dhoni</button>
+                    <button data-translate="nav_vijay" onclick="navigateTo('vijay')" class="nav-link text-brand-red hover:text-white transition-colors pb-1 hover-trigger">Thalapathy</button>
+                    <button data-translate="nav_legacy" onclick="navigateTo('legacy')" class="nav-link text-gray-300 hover:text-white transition-colors pb-1 hover-trigger">Hall of Fame</button>
+                    <button data-translate="nav_contact" onclick="navigateTo('contact')" class="bg-white/10 border border-white/20 text-white px-5 py-2 rounded hover:bg-white hover:text-black transition-all hover-trigger">Contact</button>
+                    
+                    <!-- Language Switcher (Desktop) -->
+                    <div class="flex bg-black/60 rounded-full border border-gray-700 p-1 ml-2 shadow-inner">
+                        <button onclick="changeLanguage('en')" class="lang-btn-en px-3 py-1 text-xs font-bold rounded-full transition-all text-black bg-white hover-trigger">EN</button>
+                        <button onclick="changeLanguage('ta')" class="lang-btn-ta px-3 py-1 text-xs font-bold rounded-full transition-all text-gray-400 hover:text-white hover-trigger">TA</button>
+                        <button onclick="changeLanguage('hi')" class="lang-btn-hi px-3 py-1 text-xs font-bold rounded-full transition-all text-gray-400 hover:text-white hover-trigger">HI</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none p-2 text-2xl hover-trigger">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-brand-dark absolute w-full border-b border-gray-800 shadow-2xl">
+            <div class="px-4 pt-2 pb-6 space-y-1 flex flex-col font-poster text-lg tracking-wide uppercase">
+                <button data-translate="nav_home" onclick="navigateTo('home')" class="text-left block px-3 py-3 text-white hover:text-brand-yellow hover-trigger">Home</button>
+                <button data-translate="nav_about" onclick="navigateTo('about')" class="text-left block px-3 py-3 text-white hover:text-brand-yellow hover-trigger">About Us</button>
+                <button data-translate="nav_dhoni" onclick="navigateTo('dhoni')" class="text-left block px-3 py-3 text-brand-yellow hover-trigger">MS Dhoni Journey</button>
+                <button data-translate="nav_vijay" onclick="navigateTo('vijay')" class="text-left block px-3 py-3 text-brand-red hover-trigger">Thalapathy Journey</button>
+                <button data-translate="nav_legacy" onclick="navigateTo('legacy')" class="text-left block px-3 py-3 text-white hover:text-brand-yellow hover-trigger">Hall of Fame</button>
+                <button data-translate="nav_contact" onclick="navigateTo('contact')" class="text-left block px-3 py-3 text-gray-400 border-t border-gray-800 mt-2 pt-4 hover-trigger">Contact</button>
+                
+                <!-- Mobile Language Switcher -->
+                <div class="flex justify-center gap-2 mt-4 pt-4 border-t border-gray-800">
+                    <button onclick="changeLanguage('en')" class="lang-btn-en px-4 py-2 text-sm font-bold rounded-full transition-all text-black bg-white hover-trigger">EN</button>
+                    <button onclick="changeLanguage('ta')" class="lang-btn-ta px-4 py-2 text-sm font-bold rounded-full transition-all text-gray-400 border border-gray-700 hover:bg-white/10 hover-trigger">TA</button>
+                    <button onclick="changeLanguage('hi')" class="lang-btn-hi px-4 py-2 text-sm font-bold rounded-full transition-all text-gray-400 border border-gray-700 hover:bg-white/10 hover-trigger">HI</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="min-h-screen">
+
+        <!-- ================= 1. HOMEPAGE ================= -->
+        <div id="page-home" class="page-view active">
+            <section class="split-container bg-black pt-20 lg:pt-0">
+                <div id="particles-js"></div>
+                
+                <!-- Central Absolute Logo/Tagline (Matches Background Image precisely) -->
+                <div class="center-logo-hero flex flex-col items-center">
+                    <div class="glitch-wrapper mb-2">
+                        <h1 class="font-poster text-6xl md:text-8xl xl:text-9xl font-bold text-white tracking-widest glitch drop-shadow-2xl" data-text="ICONS HUB">ICONS HUB</h1>
+                    </div>
+                    <!-- Glass dark box pill behind tagline -->
+                    <div class="mt-4 bg-black/60 backdrop-blur-md px-6 md:px-12 py-3 md:py-4 rounded-md shadow-2xl border border-white/5">
+                        <p data-translate="tagline" class="font-sans text-xs md:text-sm font-medium text-gray-300 uppercase tracking-[0.2em] md:tracking-[0.3em]">
+                            Celebrating Excellence, Leadership, and Tamil Pride
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Left: Dhoni / CSK -->
+                <div class="split-pane split-left relative flex-1 h-1/2 lg:h-full flex flex-col justify-center lg:justify-end items-center lg:items-start p-8 lg:p-12 xl:p-24 lg:pb-20 xl:pb-24 group hover-trigger" onclick="navigateTo('dhoni')">
+                    <div class="pane-overlay"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent lg:w-3/4 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-yellow/20 to-transparent opacity-30 lg:opacity-60 pointer-events-none"></div>
+
+                    <!-- Content -->
+                    <div class="relative z-10 text-center lg:text-left transform transition-transform duration-500 group-hover:scale-105">
+                        <div class="flex items-center gap-3 mb-2 justify-center lg:justify-start">
+                            <span class="w-8 h-[2px] bg-brand-yellow block"></span>
+                            <span data-translate="d_team" class="text-brand-yellow font-bold font-sans tracking-widest uppercase text-[10px] md:text-xs">Chennai Super Kings</span>
+                        </div>
+                        <h2 data-translate="d_title" class="font-poster text-5xl xl:text-7xl font-bold text-white mb-4 leading-[1.05] uppercase drop-shadow-lg">
+                            Captain.<br>Leader.<br><span class="text-brand-yellow">Legend.</span>
+                        </h2>
+                        <p data-translate="d_desc" class="text-gray-300 font-sans max-w-xs xl:max-w-sm mb-8 hidden md:block text-sm">
+                            The man who transformed Indian cricket and built a dynasty through Chennai Super Kings. A masterclass in calmness and execution.
+                        </p>
+                        <button data-translate="d_btn" class="bg-transparent border border-brand-yellow text-brand-yellow font-poster uppercase tracking-widest px-6 py-2 xl:py-3 rounded-sm hover:bg-brand-yellow hover:text-black transition-colors text-sm flex items-center gap-2 mx-auto lg:mx-0">
+                            Explore Dhoni <i class="fas fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Vijay / Cinema -->
+                <div class="split-pane split-right relative flex-1 h-1/2 lg:h-full flex flex-col justify-center lg:justify-end items-center lg:items-end p-8 lg:p-12 xl:p-24 lg:pb-20 xl:pb-24 group hover-trigger" onclick="navigateTo('vijay')">
+                    <div class="pane-overlay"></div>
+                    <div class="absolute inset-0 bg-gradient-to-l from-black/90 via-black/40 to-transparent lg:w-3/4 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-red/20 to-transparent opacity-30 lg:opacity-60 pointer-events-none"></div>
+
+                    <!-- Content -->
+                    <div class="relative z-10 text-center lg:text-right transform transition-transform duration-500 group-hover:scale-105 flex flex-col items-center lg:items-end">
+                        <div class="flex items-center gap-3 mb-2 justify-center lg:justify-end w-full">
+                            <span data-translate="v_tag" class="text-brand-red font-bold font-sans tracking-widest uppercase text-[10px] md:text-xs">Tamil Cinema Icon</span>
+                            <span class="w-8 h-[2px] bg-brand-red block"></span>
+                        </div>
+                        <h2 data-translate="v_title" class="font-poster text-5xl xl:text-7xl font-bold text-white mb-4 leading-[1.05] uppercase drop-shadow-lg text-right">
+                            Actor.<br>Inspiration.<br><span class="text-brand-red">Icon.</span>
+                        </h2>
+                        <p data-translate="v_desc" class="text-gray-300 font-sans max-w-xs xl:max-w-sm mb-8 hidden md:block text-right text-sm">
+                            The entertainer who inspired generations through cinema, hard work, and dedication. A journey of mass appeal and cultural impact.
+                        </p>
+                        <button data-translate="v_btn" class="bg-transparent border border-brand-red text-brand-red font-poster uppercase tracking-widest px-6 py-2 xl:py-3 rounded-sm hover:bg-brand-red hover:text-white transition-colors text-sm flex items-center gap-2 flex-row-reverse md:flex-row">
+                            <i class="fas fa-chevron-left text-xs hidden md:block"></i> Explore Vijay <i class="fas fa-chevron-right text-xs md:hidden"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Scroll indicator -->
+                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex flex-col items-center animate-bounce opacity-60 hidden md:flex pointer-events-none">
+                    <span data-translate="scroll" class="text-[10px] text-gray-400 uppercase tracking-widest mb-2 font-sans font-bold">Scroll</span>
+                    <div class="w-[1px] h-6 bg-gray-400"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= 2. ABOUT US ================= -->
+        <div id="page-about" class="page-view pt-32 pb-24 bg-brand-dark min-h-screen relative overflow-hidden">
+            <!-- Glows -->
+            <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-yellow rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse-slow pointer-events-none"></div>
+            <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-brand-red rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse-slow pointer-events-none" style="animation-delay: 2s;"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-16 reveal">
+                    <h2 data-translate="about_title" class="font-poster text-5xl md:text-6xl text-white uppercase tracking-wider mb-4">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red">Mission</span></h2>
+                    <p data-translate="about_desc" class="text-gray-400 font-sans max-w-2xl mx-auto text-lg leading-relaxed">Celebrating the pinnacle of sports leadership and cinematic influence that shapes the culture of Tamil Nadu and inspires global audiences.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                    <!-- Mission Card -->
+                    <div class="bg-brand-card p-10 rounded-xl border-t-4 border-brand-yellow reveal hover:-translate-y-2 transition-transform duration-500 shadow-lg hover:shadow-brand-yellow/10 hover-trigger">
+                        <div class="w-16 h-16 bg-black rounded-full border border-gray-700 flex items-center justify-center mb-6">
+                            <i class="fas fa-crosshairs text-2xl text-brand-yellow"></i>
+                        </div>
+                        <h3 data-translate="about_c1_title" class="font-poster text-2xl text-white mb-3 uppercase tracking-wide">Website Purpose</h3>
+                        <p data-translate="about_c1_desc" class="text-gray-400 text-sm leading-relaxed">To serve as a premium educational platform that chronicles the monumental impact of MS Dhoni and Thalapathy Vijay. We analyze their journeys to extract valuable life lessons in leadership, resilience, and mass appeal.</p>
+                    </div>
+                    <!-- Vision Card -->
+                    <div class="bg-brand-card p-10 rounded-xl border-t-4 border-brand-red reveal delay-100 hover:-translate-y-2 transition-transform duration-500 shadow-lg hover:shadow-brand-red/10 hover-trigger">
+                        <div class="w-16 h-16 bg-black rounded-full border border-gray-700 flex items-center justify-center mb-6">
+                            <i class="fas fa-eye text-2xl text-brand-red"></i>
+                        </div>
+                        <h3 data-translate="about_c2_title" class="font-poster text-2xl text-white mb-3 uppercase tracking-wide">Our Vision</h3>
+                        <p data-translate="about_c2_desc" class="text-gray-400 text-sm leading-relaxed">To unite diverse fan bases under the common umbrella of inspiration. By showcasing their parallel paths to greatness, we aim to motivate the youth to pursue excellence with humility and hard work.</p>
+                    </div>
+                    <!-- Values Card -->
+                    <div class="bg-brand-card p-10 rounded-xl border-t-4 border-white reveal delay-200 hover:-translate-y-2 transition-transform duration-500 shadow-lg hover:shadow-white/10 hover-trigger">
+                        <div class="w-16 h-16 bg-black rounded-full border border-gray-700 flex items-center justify-center mb-6">
+                            <i class="fas fa-handshake text-2xl text-white"></i>
+                        </div>
+                        <h3 data-translate="about_c3_title" class="font-poster text-2xl text-white mb-3 uppercase tracking-wide">Tamil Pride</h3>
+                        <p data-translate="about_c3_desc" class="text-gray-400 text-sm leading-relaxed">Though from different backgrounds, both icons have become adopted sons of Tamil Nadu. They represent the spirit of Chennai—never giving up, entertaining the masses, and leading with a calm, focused mind.</p>
+                    </div>
+                </div>
+
+                <!-- Educational Notice -->
+                <div class="bg-gradient-to-r from-gray-900 to-black p-8 rounded-xl border-l-4 border-brand-yellow reveal flex items-center gap-8 shadow-2xl">
+                    <div class="hidden md:block text-5xl text-gray-700"><i class="fas fa-graduation-cap"></i></div>
+                    <div>
+                        <h4 data-translate="about_notice_title" class="text-white font-poster text-xl tracking-wider uppercase mb-2">Internship Project Context</h4>
+                        <p data-translate="about_notice_desc" class="text-gray-400 text-sm leading-relaxed">Developed by M. Madeshwaran, this portal is designed as an interactive showcase demonstrating modern web development, UI/UX design, and content structuring. It explores how powerful themes (Sports & Cinema) can drive engaging digital experiences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 3. MS DHONI JOURNEY ================= -->
+        <div id="page-dhoni" class="page-view bg-[#0A0A0A]">
+            <!-- Hero Header -->
+            <div class="relative py-32 border-b-4 border-brand-yellow bg-[url('https://images.unsplash.com/photo-1599839619722-39751411ea63?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center bg-fixed">
+                <div class="absolute inset-0 bg-black/80"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-yellow/10 to-transparent"></div>
+                <div class="max-w-7xl mx-auto px-4 relative z-10 text-center reveal">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/2b/Chennai_Super_Kings_Logo.svg/1200px-Chennai_Super_Kings_Logo.svg.png" onerror="this.style.display='none'" class="h-24 mx-auto mb-6 opacity-80" alt="CSK">
+                    <h1 class="font-poster text-6xl md:text-8xl text-white uppercase tracking-tighter mb-4 drop-shadow-2xl">MS <span class="text-brand-yellow">DHONI</span></h1>
+                    <p data-translate="d_hero_sub" class="text-gray-300 font-sans text-sm md:text-lg tracking-[0.3em] uppercase">The Architect of Yellow Dominance</p>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+                    <!-- Timeline Section -->
+                    <div class="reveal">
+                        <h3 data-translate="d_journey_title" class="font-poster text-3xl text-white mb-10 flex items-center gap-4">
+                            <span class="w-8 h-[2px] bg-brand-yellow"></span> The Cricket Journey
+                        </h3>
+                        <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-brand-yellow before:via-gray-700 before:to-transparent">
+                            <!-- Timeline Item -->
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover-trigger">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0A0A0A] bg-brand-yellow text-black z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(250,204,21,0.4)] group-hover:scale-125 transition-transform">
+                                    <i class="fas fa-train text-sm"></i>
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-lg bg-[#111] border border-gray-800 transition-colors group-hover:border-brand-yellow/50">
+                                    <span data-translate="d_t1_tag" class="text-brand-yellow font-bold text-xs uppercase tracking-widest mb-2 block">Early Life</span>
+                                    <h4 data-translate="d_t1_title" class="text-white font-poster text-xl tracking-wide mb-2">Ticket Collector to Cricketer</h4>
+                                    <p data-translate="d_t1_desc" class="text-gray-400 text-sm leading-relaxed">From the small town of Ranchi, working as a TTE in Kharagpur, to breaking into the national consciousness with raw hitting power.</p>
+                                </div>
+                            </div>
+                            <!-- Timeline Item -->
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover-trigger">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0A0A0A] bg-brand-yellow text-black z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(250,204,21,0.4)] group-hover:scale-125 transition-transform">
+                                    <i class="fas fa-globe text-sm"></i>
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-lg bg-[#111] border border-gray-800 transition-colors group-hover:border-brand-yellow/50">
+                                    <span data-translate="d_t2_tag" class="text-brand-yellow font-bold text-xs uppercase tracking-widest mb-2 block">2007 - 2013</span>
+                                    <h4 data-translate="d_t2_title" class="text-white font-poster text-xl tracking-wide mb-2">ICC Trophy Sweep</h4>
+                                    <p data-translate="d_t2_desc" class="text-gray-400 text-sm leading-relaxed">The only captain to win all three ICC white-ball trophies: T20 World Cup, ODI World Cup, and Champions Trophy.</p>
+                                </div>
+                            </div>
+                            <!-- Timeline Item -->
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover-trigger">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0A0A0A] bg-brand-yellow text-black z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(250,204,21,0.4)] group-hover:scale-125 transition-transform">
+                                    <i class="fas fa-crown text-sm"></i>
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-lg bg-[#111] border border-gray-800 transition-colors group-hover:border-brand-yellow/50">
+                                    <span data-translate="d_t3_tag" class="text-brand-yellow font-bold text-xs uppercase tracking-widest mb-2 block">2008 - Present</span>
+                                    <h4 data-translate="d_t3_title" class="text-white font-poster text-xl tracking-wide mb-2">CSK Legacy & 5 Titles</h4>
+                                    <p data-translate="d_t3_desc" class="text-gray-400 text-sm leading-relaxed">Building the most consistent franchise in IPL history, leading the "Dad's Army" to incredible comebacks and 5 IPL crowns.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leadership Skills -->
+                    <div class="reveal delay-200">
+                        <h3 data-translate="d_lead_title" class="font-poster text-3xl text-white mb-10 flex items-center gap-4">
+                            <span class="w-8 h-[2px] bg-brand-yellow"></span> Leadership Masterclass
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="bg-[#111] p-6 rounded-lg border border-gray-800 flex items-start gap-5 hover:border-brand-yellow transition-colors hover-trigger">
+                                <div class="w-12 h-12 rounded bg-black flex items-center justify-center text-brand-yellow text-xl shrink-0"><i class="fas fa-brain"></i></div>
+                                <div>
+                                    <h4 data-translate="d_l1_title" class="text-white font-poster text-xl tracking-wide mb-1">Calmness Under Pressure</h4>
+                                    <p data-translate="d_l1_desc" class="text-gray-400 text-sm leading-relaxed">The "Captain Cool" persona. Absorbing pressure so the team can perform freely, leading to countless last-over finishes.</p>
+                                </div>
+                            </div>
+                            <div class="bg-[#111] p-6 rounded-lg border border-gray-800 flex items-start gap-5 hover:border-brand-yellow transition-colors hover-trigger">
+                                <div class="w-12 h-12 rounded bg-black flex items-center justify-center text-brand-yellow text-xl shrink-0"><i class="fas fa-chess-knight"></i></div>
+                                <div>
+                                    <h4 data-translate="d_l2_title" class="text-white font-poster text-xl tracking-wide mb-1">Tactical Instincts</h4>
+                                    <p data-translate="d_l2_desc" class="text-gray-400 text-sm leading-relaxed">Mastering the spin choke at Chepauk. Unorthodox field placements and trusting bowlers based on gut feeling over pure data.</p>
+                                </div>
+                            </div>
+                            <div class="bg-[#111] p-6 rounded-lg border border-gray-800 flex items-start gap-5 hover:border-brand-yellow transition-colors hover-trigger">
+                                <div class="w-12 h-12 rounded bg-black flex items-center justify-center text-brand-yellow text-xl shrink-0"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <h4 data-translate="d_l3_title" class="text-white font-poster text-xl tracking-wide mb-1">Team Building</h4>
+                                    <p data-translate="d_l3_desc" class="text-gray-400 text-sm leading-relaxed">Backing players when they fail, assigning clear roles, and turning discarded veterans into match-winners for CSK.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Posters Layout -->
+                <div class="reveal">
+                    <h3 data-translate="d_posters_title" class="font-poster text-4xl text-center text-white mb-12 uppercase tracking-widest border-b border-gray-800 pb-6">Iconic Posters</h3>
+                    <div class="flex flex-wrap justify-center gap-10 pb-12">
+                        <div class="premium-poster w-72 h-96 relative hover-trigger">
+                            <span data-translate="d_p1_tag" class="poster-label">The Finisher</span>
+                            <img src="https://scontent.fmaa2-4.fna.fbcdn.net/v/t51.82787-15/536254577_18368970400149581_8362599450563739276_n.webp?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=2p_dPgzex_EQ7kNvwFXcLfS&_nc_oc=AdrBnUb3mfBG8CFr_hjzgkLIn5fd3tMU0oz7oeHrwiieELVDBvlIxXXwCZPAg6c2qvqUcQcADwBSQ77PDtlPuf6t&_nc_zt=23&_nc_ht=scontent.fmaa2-4.fna&_nc_gid=PKxj2xDJB5_t-HjeUIr9Xg&_nc_ss=7b289&oh=00_Af8cMILV0eiGjDfmpM4iWzCrFxQEWrYNnGkBOhcPZOzLEw&oe=6A278004" alt="Stadium" class="poster-img grayscale hover:grayscale-0 transition-all duration-500">
+                            <div class="absolute bottom-6 left-0 right-0 text-center bg-black/90 py-3 backdrop-blur-md">
+                                <h4 data-translate="d_p1_title" class="font-poster text-brand-yellow text-2xl tracking-widest uppercase">STRIKE RATE 135.9</h4>
+                            </div>
+                        </div>
+                        <div class="premium-poster tilt-right w-72 h-96 relative hover-trigger">
+                            <span data-translate="d_p2_tag" class="poster-label">Captain Cool</span>
+                            <img src="https://scontent.fmaa2-1.fna.fbcdn.net/v/t39.30808-6/534220399_1174863601335845_8798967508163496418_n.jpg?stp=dst-jpg_s1080x2048_tt6&_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_ohc=KzHoK7PrlvkQ7kNvwFrfWTH&_nc_oc=Adr1f4X72dvLn2aHIrWr62kthVixKveGf_9Yhsn825Bnlbv609aNB5UOrLXdQWmAyKGlXAhjmx02BIIVbrb6Vq82&_nc_zt=23&_nc_ht=scontent.fmaa2-1.fna&_nc_gid=33rYDL0k20OXjwTpQ18grg&_nc_ss=7b289&oh=00_Af8M8k6S7hmjSWJo5BNI-TyLZ6lqiO-mLJSdEqbHb0QEPA&oe=6A2763CD" alt="Cricket" class="poster-img grayscale hover:grayscale-0 transition-all duration-500">
+                            <div class="absolute bottom-6 left-0 right-0 text-center bg-brand-yellow/90 py-3 backdrop-blur-md">
+                                <h4 data-translate="d_p2_title" class="font-poster text-black text-2xl tracking-widest uppercase">7 = LEGACY</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 4. THALAPATHY VIJAY JOURNEY ================= -->
+        <div id="page-vijay" class="page-view bg-[#0A0505]">
+            <!-- Hero Header -->
+            <div class="relative py-32 border-b-4 border-brand-red bg-[url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center bg-fixed">
+                <div class="absolute inset-0 bg-black/85"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-redDark/40 to-transparent mix-blend-overlay"></div>
+                <div class="max-w-7xl mx-auto px-4 relative z-10 text-center reveal">
+                    <h1 class="font-poster text-6xl md:text-8xl text-white uppercase tracking-tighter mb-4 drop-shadow-2xl">THALAPATHY <span class="text-brand-red">VIJAY</span></h1>
+                    <p data-translate="v_hero_sub" class="text-gray-300 font-sans text-sm md:text-lg tracking-[0.3em] uppercase">The Absolute Mass Icon</p>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+                    <!-- Cinematic Timeline -->
+                    <div class="reveal">
+                        <h3 data-translate="v_journey_title" class="font-poster text-3xl text-white mb-10 flex items-center gap-4">
+                            <span class="w-8 h-[2px] bg-brand-red"></span> Cinematic Journey
+                        </h3>
+                        <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-[2px] before:bg-gradient-to-b before:from-brand-red before:via-gray-800 before:to-transparent">
+                            <!-- Timeline Item -->
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover-trigger">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0A0505] bg-brand-red text-white z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(220,38,38,0.5)] group-hover:scale-125 transition-transform">
+                                    <i class="fas fa-film text-sm"></i>
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-lg bg-[#111] border border-gray-800 transition-colors group-hover:border-brand-red/50">
+                                    <span data-translate="v_t1_tag" class="text-brand-red font-bold text-xs uppercase tracking-widest mb-2 block">Early Career</span>
+                                    <h4 data-translate="v_t1_title" class="text-white font-poster text-xl tracking-wide mb-2">Rise of the Romantic Hero</h4>
+                                    <p data-translate="v_t1_desc" class="text-gray-400 text-sm leading-relaxed">Starting with initial struggles, finding his footing with blockbusters like Poove Unakkaga and Kadhalukku Mariyadhai, establishing a massive family audience.</p>
+                                </div>
+                            </div>
+                            <!-- Timeline Item -->
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover-trigger">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0A0505] bg-brand-red text-white z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(220,38,38,0.5)] group-hover:scale-125 transition-transform">
+                                    <i class="fas fa-fist-raised text-sm"></i>
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-lg bg-[#111] border border-gray-800 transition-colors group-hover:border-brand-red/50">
+                                    <span data-translate="v_t2_tag" class="text-brand-red font-bold text-xs uppercase tracking-widest mb-2 block">The Transformation</span>
+                                    <h4 data-translate="v_t2_title" class="text-white font-poster text-xl tracking-wide mb-2">Ghilli & The Action Era</h4>
+                                    <p data-translate="v_t2_desc" class="text-gray-400 text-sm leading-relaxed">Transforming into a bonafide action star. Setting box office records and establishing the 'Thalapathy' persona with unmatched screen presence.</p>
+                                </div>
+                            </div>
+                            <!-- Timeline Item -->
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group hover-trigger">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0A0505] bg-brand-red text-white z-10 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(220,38,38,0.5)] group-hover:scale-125 transition-transform">
+                                    <i class="fas fa-ticket-alt text-sm"></i>
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-lg bg-[#111] border border-gray-800 transition-colors group-hover:border-brand-red/50">
+                                    <span data-translate="v_t3_tag" class="text-brand-red font-bold text-xs uppercase tracking-widest mb-2 block">Present Day</span>
+                                    <h4 data-translate="v_t3_title" class="text-white font-poster text-xl tracking-wide mb-2">Box Office Emperor</h4>
+                                    <p data-translate="v_t3_desc" class="text-gray-400 text-sm leading-relaxed">Delivering consistent industry hits (Theri, Mersal, Leo). Commanding one of the largest and most loyal fan bases in Indian cinema.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inspiration & Social -->
+                    <div class="reveal delay-200 flex flex-col justify-between">
+                        <div>
+                            <h3 data-translate="v_impact_title" class="font-poster text-3xl text-white mb-10 flex items-center gap-4">
+                                <span class="w-8 h-[2px] bg-brand-red"></span> Impact & Leadership
+                            </h3>
+                            <div class="space-y-6 mb-10">
+                                <div class="bg-[#111] p-6 rounded-lg border border-gray-800 flex items-start gap-5 hover:border-brand-red transition-colors hover-trigger">
+                                    <div class="w-12 h-12 rounded bg-black flex items-center justify-center text-brand-red text-xl shrink-0"><i class="fas fa-heart"></i></div>
+                                    <div>
+                                        <h4 data-translate="v_i1_title" class="text-white font-poster text-xl tracking-wide mb-1">Social Contributions</h4>
+                                        <p data-translate="v_i1_desc" class="text-gray-400 text-sm leading-relaxed">Through his massive fan network, organizing continuous blood donation drives, educational support, and disaster relief across Tamil Nadu.</p>
+                                    </div>
+                                </div>
+                                <div class="bg-[#111] p-6 rounded-lg border border-gray-800 flex items-start gap-5 hover:border-brand-red transition-colors hover-trigger">
+                                    <div class="w-12 h-12 rounded bg-black flex items-center justify-center text-brand-red text-xl shrink-0"><i class="fas fa-bullhorn"></i></div>
+                                    <div>
+                                        <h4 data-translate="v_i2_title" class="text-white font-poster text-xl tracking-wide mb-1">Voice of the Youth</h4>
+                                        <p data-translate="v_i2_desc" class="text-gray-400 text-sm leading-relaxed">Using movie audio launches and on-screen messaging to deliver powerful advice on hard work, ignoring negativity, and respecting parents.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TVK Subsection -->
+                        <div class="bg-gradient-to-br from-[#1a0505] to-black p-8 rounded-xl border border-brand-red/30 relative overflow-hidden shadow-2xl">
+                            <div class="absolute -right-4 -bottom-4 text-8xl text-brand-red opacity-5"><i class="fas fa-flag"></i></div>
+                            <h4 data-translate="v_tvk_title" class="font-poster text-2xl text-white uppercase tracking-wider mb-3">Tamilaga Vettri Kazhagam (TVK)</h4>
+                            <p data-translate="v_tvk_desc" class="text-gray-300 text-sm leading-relaxed mb-4">The next chapter in Thalapathy's journey transitions from screen to public service. TVK was formed with a vision for positive political change, focusing on equality, education, and welfare in Tamil Nadu.</p>
+                            <span data-translate="v_tvk_tag" class="inline-block bg-brand-red/20 text-brand-red font-bold text-xs px-3 py-1 rounded border border-brand-red/50 uppercase tracking-widest">A New Era of Leadership</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Posters Layout -->
+                <div class="reveal">
+                    <h3 data-translate="v_posters_title" class="font-poster text-4xl text-center text-white mb-12 uppercase tracking-widest border-b border-gray-800 pb-6">Cinematic Posters</h3>
+                    <div class="flex flex-wrap justify-center gap-10 pb-12">
+                        <div class="premium-poster tilt-right w-72 h-96 relative hover-trigger">
+                            <span data-translate="v_p1_tag" class="poster-label red-label text-sm">Leader of Millions</span>
+                            <img src="https://is.zobj.net/image-server/v1/images?r=eAvZJ1M8MBF8Og_ifkRL8hwns4o4rIMUsM89jfoaR7ZwbN7wkyJgT4UB-xyuS3ZCZ1scYXiDQQkyEaFP17069F5YigLYQL7MU1qMfknLUiEPWe-arDU7HfypZ_8SvAQMZT_hT9S_WX7oCK3rzEqPFjIZnNxYvSrhBjgwV-QHAZP17MAVjHcoPA5PQzJwp1ttNb30Ioq0XQr-mloN89XZCDwgCB7NdJz9ny_QjNPn53F2bapC3X3_QnhFFi4" alt="Cinema" class="poster-img grayscale hover:grayscale-0 transition-all duration-500">
+                            <div class="absolute bottom-6 left-0 right-0 text-center bg-black/90 py-3 backdrop-blur-md">
+                                <h4 data-translate="v_p1_title" class="font-poster text-brand-red text-xl tracking-widest uppercase">IGNORE NEGATIVITY</h4>
+                            </div>
+                        </div>
+                        <div class="premium-poster w-72 h-96 relative hover-trigger">
+                            <span data-translate="v_p2_tag" class="poster-label red-label">Mass Icon</span>
+                            <img src="https://m.media-amazon.com/images/I/71zeuz3Vk9L._AC_UF894,1000_QL80_.jpg" alt="Lights" class="poster-img grayscale hover:grayscale-0 transition-all duration-500">
+                            <div class="absolute bottom-6 left-0 right-0 text-center bg-brand-red/90 py-3 backdrop-blur-md">
+                                <h4 data-translate="v_p2_title" class="font-poster text-white text-2xl tracking-widest uppercase">BLOCKBUSTER</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 5. HALL OF FAME & STATS ================= -->
+        <div id="page-legacy" class="page-view bg-[#050505] py-32 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div class="text-center mb-24 reveal">
+                    <h2 data-translate="hof_title" class="font-poster text-5xl md:text-6xl text-white uppercase tracking-wider mb-4">Hall of <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red">Fame</span></h2>
+                    <div class="w-24 h-1 bg-gradient-to-r from-brand-yellow to-brand-red mx-auto mb-6"></div>
+                    <p data-translate="hof_desc" class="text-gray-400 font-sans max-w-2xl mx-auto">Parallels of undeniable greatness spanning across two massive domains.</p>
+                </div>
+
+                <!-- Animated Counters Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
+                    
+                    <!-- CSK Legacy Exact Match Card -->
+                    <div class="bg-gradient-to-br from-[#12102f] to-[#080715] p-10 rounded-2xl reveal shadow-2xl relative overflow-hidden hover-trigger">
+                        <!-- Crown Icon -->
+                        <div class="absolute top-8 right-8 text-4xl text-[#C5A059] opacity-90">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        
+                        <h3 data-translate="hof_csk_title" class="font-poster text-4xl text-white uppercase tracking-wide mb-4">CSK LEGACY</h3>
+                        <p data-translate="hof_csk_desc" class="text-gray-300 font-sans text-sm md:text-base leading-relaxed mb-10 max-w-sm">
+                            Architect of the most consistent franchise in IPL history.<br>Forging a bond with Chennai that transcends sport.
+                        </p>
+                        
+                        <!-- Stats Grid matching Image exactly -->
+                        <div class="grid grid-cols-2 gap-5">
+                            <div class="bg-[#0b0c16] rounded-xl p-8 flex flex-col justify-center items-center border border-white/5 shadow-inner">
+                                <span class="font-poster text-5xl text-brand-yellow font-bold mb-3 counter" data-target="5">0</span>
+                                <span data-translate="hof_stat_1" class="text-[11px] text-gray-400 font-sans font-bold tracking-widest uppercase text-center">IPL TITLES</span>
+                            </div>
+                            <div class="bg-[#0b0c16] rounded-xl p-8 flex flex-col justify-center items-center border border-white/5 shadow-inner">
+                                <span class="font-poster text-5xl text-brand-yellow font-bold mb-3 counter" data-target="10">0</span>
+                                <span data-translate="hof_stat_2" class="text-[11px] text-gray-400 font-sans font-bold tracking-widest uppercase text-center">IPL FINALS</span>
+                            </div>
+                            <div class="bg-[#0b0c16] rounded-xl p-8 flex flex-col justify-center items-center col-span-2 border border-white/5 shadow-inner mt-2">
+                                <div class="flex items-end mb-3">
+                                    <span class="font-poster text-6xl text-white font-bold counter" data-target="250">0</span>
+                                    <span class="font-poster text-3xl text-white font-bold mb-1 ml-1">+</span>
+                                </div>
+                                <span data-translate="hof_stat_3" class="text-[11px] text-gray-400 font-sans font-bold tracking-widest uppercase text-center">MATCHES AS CAPTAIN</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vijay Stats Column -->
+                    <div class="bg-gradient-to-br from-[#2f1010] to-[#150707] p-10 rounded-2xl reveal delay-200 shadow-2xl relative overflow-hidden hover-trigger">
+                         <!-- Film Icon -->
+                         <div class="absolute top-8 right-8 text-4xl text-[#c55959] opacity-90">
+                            <i class="fas fa-film"></i>
+                        </div>
+
+                        <h3 data-translate="hof_mass_title" class="font-poster text-4xl text-white uppercase tracking-wide mb-4">MASS LEGACY</h3>
+                        <p data-translate="hof_mass_desc" class="text-gray-300 font-sans text-sm md:text-base leading-relaxed mb-10 max-w-sm">
+                            Commanding the most passionate fan base in Tamil cinema history.<br>Setting box office benchmarks for over three decades.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-5">
+                            <div class="bg-[#160b0b] rounded-xl p-8 flex flex-col justify-center items-center border border-white/5 shadow-inner">
+                                <span class="font-poster text-5xl text-brand-red font-bold mb-3 counter" data-target="68">0</span>
+                                <span data-translate="hof_stat_4" class="text-[11px] text-gray-400 font-sans font-bold tracking-widest uppercase text-center">FEATURE FILMS</span>
+                            </div>
+                            <div class="bg-[#160b0b] rounded-xl p-8 flex flex-col justify-center items-center border border-white/5 shadow-inner">
+                                <span class="font-poster text-5xl text-brand-red font-bold mb-3 counter" data-target="50">0</span>
+                                <span data-translate="hof_stat_5" class="text-[11px] text-gray-400 font-sans font-bold tracking-widest uppercase text-center">AWARDS WON</span>
+                            </div>
+                            <div class="bg-[#160b0b] rounded-xl p-8 flex flex-col justify-center items-center col-span-2 border border-white/5 shadow-inner mt-2">
+                                <div class="flex items-end mb-3">
+                                    <span class="font-poster text-6xl text-white font-bold counter" data-target="30">0</span>
+                                    <span class="font-poster text-3xl text-white font-bold mb-1 ml-1">+</span>
+                                </div>
+                                <span data-translate="hof_stat_6" class="text-[11px] text-gray-400 font-sans font-bold tracking-widest uppercase text-center">YEARS OF ENTERTAINMENT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inspiration Comparison Cards -->
+                <div class="reveal">
+                    <h3 data-translate="hof_core_title" class="font-poster text-3xl text-center text-white mb-12 border-b border-gray-800 pb-4 inline-block mx-auto uppercase tracking-wider">The Core Values</h3>
+                    <div class="flex flex-col md:flex-row gap-8 justify-center">
+                        <div class="bg-[#111] border border-gray-800 p-8 rounded-xl w-full md:w-1/3 hover:-translate-y-2 transition-transform duration-300 hover-trigger shadow-lg">
+                            <div class="text-3xl text-brand-yellow mb-4"><i class="fas fa-hammer"></i></div>
+                            <h4 data-translate="hof_c1_title" class="text-white font-poster text-2xl uppercase mb-3 tracking-wide">Dedication & Hard Work</h4>
+                            <p data-translate="hof_c1_desc" class="text-gray-400 text-sm leading-relaxed">Both icons rose from humble beginnings. Dhoni's relentless practice behind the stumps; Vijay's dedication to perfecting his dance and screen presence despite early criticism.</p>
+                        </div>
+                        <div class="bg-[#111] border border-gray-800 p-8 rounded-xl w-full md:w-1/3 hover:-translate-y-2 transition-transform duration-300 hover-trigger shadow-lg">
+                            <div class="text-3xl text-white mb-4"><i class="fas fa-shield-alt"></i></div>
+                            <h4 data-translate="hof_c2_title" class="text-white font-poster text-2xl uppercase mb-3 tracking-wide">Handling Criticism</h4>
+                            <p data-translate="hof_c2_desc" class="text-gray-400 text-sm leading-relaxed">"Let your bat do the talking." "Ignore Negativity." Both have faced immense scrutiny but responded consistently through their monumental success rather than words.</p>
+                        </div>
+                        <div class="bg-[#111] border border-gray-800 p-8 rounded-xl w-full md:w-1/3 hover:-translate-y-2 transition-transform duration-300 hover-trigger shadow-lg">
+                            <div class="text-3xl text-brand-red mb-4"><i class="fas fa-fire"></i></div>
+                            <h4 data-translate="hof_c3_title" class="text-white font-poster text-2xl uppercase mb-3 tracking-wide">Mass Appeal</h4>
+                            <p data-translate="hof_c3_desc" class="text-gray-400 text-sm leading-relaxed">The ability to command the attention of a stadium or a cinema theater instantly. When Dhoni enters to bat, or Vijay's intro plays, the ground shakes.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= 6. CONTACT & CREATOR PROFILE ================= -->
+        <div id="page-contact" class="page-view py-32 bg-gradient-to-b from-[#0a0a0a] to-black min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center mb-20 reveal">
+                    <h2 data-translate="contact_title" class="font-poster text-5xl md:text-6xl text-white uppercase tracking-wider mb-4">Developer <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Profile</span></h2>
+                    <p data-translate="contact_desc" class="text-gray-400 font-sans max-w-2xl mx-auto text-lg">Get in touch regarding this internship project or web development inquiries.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    
+                    <!-- Creator Profile Card -->
+                    <div class="reveal">
+                        <div class="relative bg-black p-1 rounded-2xl overflow-hidden group shadow-2xl">
+                            <!-- Animated border effect -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-brand-yellow opacity-40 group-hover:opacity-100 transition-opacity duration-500" style="animation: spin 4s linear infinite;"></div>
+                            
+                            <div class="relative bg-[#111] p-10 rounded-xl h-full border border-gray-800 z-10 flex flex-col justify-between hover-trigger">
+                                <div>
+                                    <div class="flex justify-between items-start mb-8">
+                                        <div class="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center border-2 border-purple-500 overflow-hidden shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                                            <i class="fas fa-laptop-code text-4xl text-gray-300"></i>
+                                        </div>
+                                        <span data-translate="contact_badge" class="bg-purple-900/40 text-purple-300 text-xs font-bold font-sans px-4 py-2 rounded-full border border-purple-500/30 uppercase tracking-widest">AI & Web Intern</span>
+                                    </div>
+                                    
+                                    <h3 class="font-poster text-4xl font-bold text-white mb-2 tracking-wide">M. Madeshwaran</h3>
+                                    <p data-translate="contact_role" class="text-blue-400 font-sans font-medium mb-8 uppercase tracking-widest text-sm">Student | Artificial Intelligence</p>
+                                    
+                                    <div class="space-y-4 mb-10 font-sans">
+                                        <div class="flex items-center text-gray-300 text-sm gap-4 bg-black/50 p-4 rounded border border-white/5">
+                                            <div class="w-8 flex justify-center"><i class="fas fa-university text-gray-500 text-xl"></i></div>
+                                            <span data-translate="contact_uni">SRM Institute of Science and Technology (SRMIST)</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-300 text-sm gap-4 bg-black/50 p-4 rounded border border-white/5">
+                                            <div class="w-8 flex justify-center"><i class="fas fa-map-marker-alt text-gray-500 text-xl"></i></div>
+                                            <span data-translate="contact_loc">Chennai, Tamil Nadu, India</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-300 text-sm gap-4 bg-black/50 p-4 rounded border border-white/5">
+                                            <div class="w-8 flex justify-center"><i class="fas fa-envelope text-gray-500 text-xl"></i></div>
+                                            <a href="mailto:madesh22407@gmail.com" class="hover:text-white transition-colors font-medium">madesh22407@gmail.com</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Social Links Grid -->
+                                <div class="grid grid-cols-3 gap-4">
+                                    <a href="https://www.linkedin.com/in/madeshwaran-manivasagam-141567376/" target="_blank" class="flex flex-col items-center justify-center bg-black hover:bg-[#0077b5] border border-gray-800 p-4 rounded-xl transition-all text-gray-400 hover:text-white group/link hover-trigger">
+                                        <i class="fab fa-linkedin text-3xl mb-2 group-hover/link:scale-110 transition-transform"></i>
+                                        <span class="text-[10px] font-sans font-bold uppercase tracking-widest">LinkedIn</span>
+                                    </a>
+                                    <a href="https://github.com/Madesh2247" target="_blank" class="flex flex-col items-center justify-center bg-black hover:bg-[#333] border border-gray-800 p-4 rounded-xl transition-all text-gray-400 hover:text-white group/link hover-trigger">
+                                        <i class="fab fa-github text-3xl mb-2 group-hover/link:scale-110 transition-transform"></i>
+                                        <span class="text-[10px] font-sans font-bold uppercase tracking-widest">GitHub</span>
+                                    </a>
+                                    <a href="https://madesh2247.github.io/portfolio-website/" target="_blank" class="flex flex-col items-center justify-center bg-black hover:bg-gradient-to-br hover:from-purple-600 hover:to-blue-600 border border-gray-800 p-4 rounded-xl transition-all text-gray-400 hover:text-white group/link hover-trigger">
+                                        <i class="fas fa-globe text-3xl mb-2 group-hover/link:scale-110 transition-transform"></i>
+                                        <span data-translate="contact_port" class="text-[10px] font-sans font-bold uppercase tracking-widest">Portfolio</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="reveal delay-200 flex flex-col gap-8">
+                        <form id="contactForm" onsubmit="handleFormSubmit(event)" class="bg-[#111] p-10 rounded-2xl border border-gray-800 shadow-2xl h-full flex flex-col justify-center">
+                            <h3 data-translate="contact_form_title" class="font-poster text-3xl text-white mb-8 uppercase tracking-wide">Send a Message</h3>
+                            
+                            <div id="formSuccess" class="hidden mb-8 bg-green-900/30 border border-green-500/50 text-green-400 px-5 py-4 rounded text-sm flex items-center gap-3 font-sans">
+                                <i class="fas fa-check-circle text-lg"></i> <span data-translate="contact_success">Message sent successfully to Developer!</span>
+                            </div>
+
+                            <div class="space-y-6 flex-grow font-sans">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label data-translate="contact_l1" class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Full Name</label>
+                                        <input type="text" required class="w-full bg-black border border-gray-800 rounded-lg px-5 py-3 text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                    </div>
+                                    <div>
+                                        <label data-translate="contact_l2" class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Email Address</label>
+                                        <input type="email" required class="w-full bg-black border border-gray-800 rounded-lg px-5 py-3 text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label data-translate="contact_l3" class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Subject</label>
+                                    <select class="w-full bg-black border border-gray-800 rounded-lg px-5 py-3 text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
+                                        <option data-translate="contact_opt1">Internship Feedback</option>
+                                        <option data-translate="contact_opt2">Web Development Inquiry</option>
+                                        <option data-translate="contact_opt3">Fan Community Suggestion</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label data-translate="contact_l4" class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Message</label>
+                                    <textarea required rows="4" class="w-full bg-black border border-gray-800 rounded-lg px-5 py-3 text-white focus:outline-none focus:border-purple-500 transition-colors resize-none"></textarea>
+                                </div>
+                                <button type="submit" id="submitBtn" class="w-full bg-white text-black font-poster text-lg uppercase tracking-widest py-4 rounded-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-3 mt-4 hover-trigger">
+                                    <span data-translate="contact_btn">Submit Message</span> <i class="fas fa-paper-plane text-sm"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050505] border-t border-gray-900 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                
+                <div>
+                    <div class="flex items-center mb-6 gap-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-brand-yellow to-brand-red rounded transform rotate-45 flex items-center justify-center shadow-lg"></div>
+                        <span class="font-poster font-bold text-2xl text-white tracking-widest uppercase">TAMIL<span class="text-brand-yellow">ICONS</span></span>
+                    </div>
+                    <p data-translate="footer_desc" class="text-gray-500 font-sans text-sm mb-6 max-w-sm leading-relaxed">
+                        Celebrating the pinnacle of sports leadership and cinematic influence. A tribute to the inspirations of millions.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 data-translate="footer_links" class="text-white font-poster text-lg tracking-widest uppercase mb-6 border-b border-gray-800 pb-2 inline-block">Quick Links</h4>
+                    <ul class="space-y-3 font-sans text-sm text-gray-400 font-medium">
+                        <li><button onclick="navigateTo('home')" class="hover:text-white hover:translate-x-1 transition-all flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> <span data-translate="f_link1">Home Portal</span></button></li>
+                        <li><button onclick="navigateTo('dhoni')" class="hover:text-brand-yellow hover:translate-x-1 transition-all flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> <span data-translate="f_link2">MS Dhoni Legacy</span></button></li>
+                        <li><button onclick="navigateTo('vijay')" class="hover:text-brand-red hover:translate-x-1 transition-all flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> <span data-translate="f_link3">Thalapathy Cinematic</span></button></li>
+                        <li><button onclick="navigateTo('legacy')" class="hover:text-white hover:translate-x-1 transition-all flex items-center gap-2"><i class="fas fa-angle-right text-xs"></i> <span data-translate="f_link4">Hall of Fame</span></button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 data-translate="footer_dev" class="text-white font-poster text-lg tracking-widest uppercase mb-6 border-b border-gray-800 pb-2 inline-block">Developer Info</h4>
+                    <ul class="space-y-3 font-sans text-sm text-gray-400">
+                        <li class="flex items-center gap-3"><i class="fas fa-code text-gray-600"></i> <strong class="text-gray-300">M. Madeshwaran</strong></li>
+                        <li class="flex items-center gap-3"><i class="fas fa-university text-gray-600"></i> <span data-translate="f_dev1">SRMIST - Artificial Intelligence</span></li>
+                        <li><a href="https://github.com/Madesh2247" target="_blank" class="hover:text-blue-400 flex items-center gap-3"><i class="fab fa-github text-gray-600"></i> <span data-translate="f_dev2">GitHub Profile</span></a></li>
+                        <li><a href="https://www.linkedin.com/in/madeshwaran-manivasagam-141567376/" target="_blank" class="hover:text-blue-400 flex items-center gap-3"><i class="fab fa-linkedin text-gray-600"></i> <span data-translate="f_dev3">LinkedIn Profile</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-900 pt-8 flex flex-col items-center">
+                <div class="bg-[#0A0A0A] border border-gray-800 p-5 rounded-lg mb-8 max-w-4xl text-xs font-sans text-gray-500 leading-relaxed text-center shadow-inner">
+                    <strong data-translate="f_disc_title" class="text-gray-300 uppercase tracking-widest mr-2"><i class="fas fa-info-circle mr-1"></i>Disclaimer:</strong> <span data-translate="f_disc_text">This is a fan-created educational website developed for internship and learning purposes only. All trademarks, logos, images, and media related to MS Dhoni, Chennai Super Kings, Thalapathy Vijay, and TVK belong to their respective owners. This website is not officially affiliated with any individual, organization, sports franchise, or political party.</span>
+                </div>
+                
+                <p class="text-gray-600 font-sans text-xs tracking-widest uppercase font-bold">
+                    &copy; 2026 Developed by M. Madeshwaran. <span data-translate="f_rights">All conceptual rights reserved.</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- 1. Custom Cursor ---
+        const cursor = document.getElementById('custom-cursor');
+        
+        function initCursor() {
+            const hoverTriggers = document.querySelectorAll('.hover-trigger, a, button, .nav-link, .split-pane');
+            if(window.matchMedia("(pointer: fine)").matches) {
+                cursor.style.display = 'block';
+                document.addEventListener('mousemove', (e) => {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
+                });
+
+                hoverTriggers.forEach(trigger => {
+                    trigger.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                    trigger.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                });
+            } else {
+                cursor.style.display = 'none';
+            }
+        }
+
+        // --- 2. Loader Logic ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    // Bring in Navbar
+                    document.getElementById('navbar').classList.remove('-translate-y-full');
+                    initReveal(); // Start animations after load
+                    initCursor();
+                }, 600);
+            }, 1000);
+        });
+
+        // --- 3. Particles.js configuration for Hero ---
+        if(typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                    "color": { "value": ["#ffffff", "#FACC15", "#DC2626"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                    "size": { "value": 2.5, "random": true, "anim": { "enable": false } },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.1, "width": 1 },
+                    "move": { "enable": true, "speed": 1.5, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false }, "resize": true },
+                    "modes": { "grab": { "distance": 160, "line_linked": { "opacity": 0.4 } } }
+                },
+                "retina_detect": true
+            });
+        }
+
+        // --- 4. SPA Navigation Logic ---
+        function navigateTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-view').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show target page
+            const target = document.getElementById('page-' + pageId);
+            if(target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                
+                // Re-trigger reveal animations for the new page
+                setTimeout(initReveal, 50);
+            }
+
+            // Update Nav links Active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active-nav');
+                if (link.getAttribute('onclick') === `MapsTo('${pageId}')`) {
+                    link.classList.add('active-nav');
+                }
+            });
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // --- 5. Mobile Menu Toggle ---
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // --- 6. Scroll Reveal & Counter Animation Observer ---
+        function initReveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            // Reset existing revealed elements in active page
+            const activePage = document.querySelector('.page-view.active');
+            if(activePage) {
+               activePage.querySelectorAll('.reveal').forEach(el => el.classList.remove('active'));
+               // Reset counters
+               activePage.querySelectorAll('.counter').forEach(c => {
+                   c.classList.remove('counted');
+                   c.innerText = '0';
+               });
+            }
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        
+                        // Check for counters inside the revealed element
+                        const counters = entry.target.querySelectorAll('.counter');
+                        counters.forEach(counter => {
+                            startCounter(counter);
+                        });
+                        
+                        // Unobserve after showing
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+            // Only observe elements in the active page
+            if(activePage) {
+                activePage.querySelectorAll(".reveal").forEach(reveal => {
+                    observer.observe(reveal);
+                });
+            }
+        }
+
+        // --- 7. Stats Counter Logic ---
+        function startCounter(counterElement) {
+            if (counterElement.classList.contains('counted')) return;
+            
+            const target = +counterElement.getAttribute('data-target');
+            const duration = 2000; // 2 seconds
+            const increment = target / (duration / 16); // 60fps roughly
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counterElement.innerText = Math.ceil(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counterElement.innerText = target;
+                    counterElement.classList.add('counted');
+                }
+            };
+            updateCounter();
+        }
+
+        // --- 8. Form Submission Mock ---
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const successMsg = document.getElementById('formSuccess');
+            const form = document.getElementById('contactForm');
+            
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i> <span data-translate="contact_sending">Sending...</span>';
+            btn.disabled = true;
+            btn.classList.add('opacity-70');
+            
+            // Simulate network request
+            setTimeout(() => {
+                form.reset();
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                btn.classList.remove('opacity-70');
+                
+                successMsg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    successMsg.classList.add('hidden');
+                }, 5000);
+            }, 1500);
+        }
+
+        // --- 9. Navbar Scroll Effect ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-2xl', 'bg-[#0B0F19]');
+                nav.classList.remove('bg-brand-dark/80');
+            } else {
+                nav.classList.remove('shadow-2xl', 'bg-[#0B0F19]');
+                nav.classList.add('bg-brand-dark/80');
+            }
+        });
+
+        // --- 10. Language Translation Logic (Extended to whole site) ---
+        const translations = {
+            en: {
+                nav_sub: "Excellence & Pride",
+                nav_home: "Home", nav_about: "About", nav_dhoni: "MS Dhoni", nav_vijay: "Thalapathy", nav_legacy: "Hall of Fame", nav_contact: "Contact",
+                
+                tagline: "Celebrating Excellence, Leadership, and Tamil Pride",
+                d_team: "Chennai Super Kings",
+                d_title: "Captain.<br>Leader.<br><span class='text-brand-yellow'>Legend.</span>",
+                d_desc: "The man who transformed Indian cricket and built a dynasty through Chennai Super Kings. A masterclass in calmness and execution.",
+                d_btn: "Explore Dhoni <i class='fas fa-chevron-right text-xs'></i>",
+                v_tag: "Tamil Cinema Icon",
+                v_title: "Actor.<br>Inspiration.<br><span class='text-brand-red'>Icon.</span>",
+                v_desc: "The entertainer who inspired generations through cinema, hard work, and dedication. A journey of mass appeal and cultural impact.",
+                v_btn: "<i class='fas fa-chevron-left text-xs hidden md:block'></i> Explore Vijay <i class='fas fa-chevron-right text-xs md:hidden'></i>",
+                scroll: "Scroll",
+
+                about_title: "The <span class='text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red'>Mission</span>",
+                about_desc: "Celebrating the pinnacle of sports leadership and cinematic influence that shapes the culture of Tamil Nadu and inspires global audiences.",
+                about_c1_title: "Website Purpose",
+                about_c1_desc: "To serve as a premium educational platform that chronicles the monumental impact of MS Dhoni and Thalapathy Vijay. We analyze their journeys to extract valuable life lessons in leadership, resilience, and mass appeal.",
+                about_c2_title: "Our Vision",
+                about_c2_desc: "To unite diverse fan bases under the common umbrella of inspiration. By showcasing their parallel paths to greatness, we aim to motivate the youth to pursue excellence with humility and hard work.",
+                about_c3_title: "Tamil Pride",
+                about_c3_desc: "Though from different backgrounds, both icons have become adopted sons of Tamil Nadu. They represent the spirit of Chennai—never giving up, entertaining the masses, and leading with a calm, focused mind.",
+                about_notice_title: "Internship Project Context",
+                about_notice_desc: "Developed by M. Madeshwaran, this portal is designed as an interactive showcase demonstrating modern web development, UI/UX design, and content structuring. It explores how powerful themes (Sports & Cinema) can drive engaging digital experiences.",
+
+                d_hero_sub: "The Architect of Yellow Dominance",
+                d_journey_title: "The Cricket Journey",
+                d_t1_tag: "Early Life", d_t1_title: "Ticket Collector to Cricketer", d_t1_desc: "From the small town of Ranchi, working as a TTE in Kharagpur, to breaking into the national consciousness with raw hitting power.",
+                d_t2_tag: "2007 - 2013", d_t2_title: "ICC Trophy Sweep", d_t2_desc: "The only captain to win all three ICC white-ball trophies: T20 World Cup, ODI World Cup, and Champions Trophy.",
+                d_t3_tag: "2008 - Present", d_t3_title: "CSK Legacy & 5 Titles", d_t3_desc: "Building the most consistent franchise in IPL history, leading the \"Dad's Army\" to incredible comebacks and 5 IPL crowns.",
+                d_lead_title: "Leadership Masterclass",
+                d_l1_title: "Calmness Under Pressure", d_l1_desc: "The \"Captain Cool\" persona. Absorbing pressure so the team can perform freely, leading to countless last-over finishes.",
+                d_l2_title: "Tactical Instincts", d_l2_desc: "Mastering the spin choke at Chepauk. Unorthodox field placements and trusting bowlers based on gut feeling over pure data.",
+                d_l3_title: "Team Building", d_l3_desc: "Backing players when they fail, assigning clear roles, and turning discarded veterans into match-winners for CSK.",
+                d_posters_title: "Iconic Posters",
+                d_p1_tag: "The Finisher", d_p1_title: "STRIKE RATE 135.9",
+                d_p2_tag: "Captain Cool", d_p2_title: "7 = LEGACY",
+
+                v_hero_sub: "The Absolute Mass Icon",
+                v_journey_title: "Cinematic Journey",
+                v_t1_tag: "Early Career", v_t1_title: "Rise of the Romantic Hero", v_t1_desc: "Starting with initial struggles, finding his footing with blockbusters like Poove Unakkaga and Kadhalukku Mariyadhai, establishing a massive family audience.",
+                v_t2_tag: "The Transformation", v_t2_title: "Ghilli & The Action Era", v_t2_desc: "Transforming into a bonafide action star. Setting box office records and establishing the 'Thalapathy' persona with unmatched screen presence.",
+                v_t3_tag: "Present Day", v_t3_title: "Box Office Emperor", v_t3_desc: "Delivering consistent industry hits (Theri, Mersal, Leo). Commanding one of the largest and most loyal fan bases in Indian cinema.",
+                v_impact_title: "Impact & Leadership",
+                v_i1_title: "Social Contributions", v_i1_desc: "Through his massive fan network, organizing continuous blood donation drives, educational support, and disaster relief across Tamil Nadu.",
+                v_i2_title: "Voice of the Youth", v_i2_desc: "Using movie audio launches and on-screen messaging to deliver powerful advice on hard work, ignoring negativity, and respecting parents.",
+                v_tvk_title: "Tamilaga Vettri Kazhagam (TVK)", v_tvk_desc: "The next chapter in Thalapathy's journey transitions from screen to public service. TVK was formed with a vision for positive political change, focusing on equality, education, and welfare in Tamil Nadu.", v_tvk_tag: "A New Era of Leadership",
+                v_posters_title: "Cinematic Posters",
+                v_p1_tag: "Leader of Millions", v_p1_title: "IGNORE NEGATIVITY",
+                v_p2_tag: "Mass Icon", v_p2_title: "BLOCKBUSTER",
+
+                hof_title: "Hall of <span class='text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red'>Fame</span>",
+                hof_desc: "Parallels of undeniable greatness spanning across two massive domains.",
+                hof_csk_title: "CSK LEGACY", hof_csk_desc: "Architect of the most consistent franchise in IPL history.<br>Forging a bond with Chennai that transcends sport.",
+                hof_stat_1: "IPL TITLES", hof_stat_2: "IPL FINALS", hof_stat_3: "MATCHES AS CAPTAIN",
+                hof_mass_title: "MASS LEGACY", hof_mass_desc: "Commanding the most passionate fan base in Tamil cinema history.<br>Setting box office benchmarks for over three decades.",
+                hof_stat_4: "FEATURE FILMS", hof_stat_5: "AWARDS WON", hof_stat_6: "YEARS OF ENTERTAINMENT",
+                hof_core_title: "The Core Values",
+                hof_c1_title: "Dedication & Hard Work", hof_c1_desc: "Both icons rose from humble beginnings. Dhoni's relentless practice behind the stumps; Vijay's dedication to perfecting his dance and screen presence despite early criticism.",
+                hof_c2_title: "Handling Criticism", hof_c2_desc: "\"Let your bat do the talking.\" \"Ignore Negativity.\" Both have faced immense scrutiny but responded consistently through their monumental success rather than words.",
+                hof_c3_title: "Mass Appeal", hof_c3_desc: "The ability to command the attention of a stadium or a cinema theater instantly. When Dhoni enters to bat, or Vijay's intro plays, the ground shakes.",
+
+                contact_title: "Developer <span class='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500'>Profile</span>",
+                contact_desc: "Get in touch regarding this internship project or web development inquiries.",
+                contact_badge: "AI & Web Intern", contact_role: "Student | Artificial Intelligence",
+                contact_uni: "SRM Institute of Science and Technology (SRMIST)", contact_loc: "Chennai, Tamil Nadu, India", contact_port: "Portfolio",
+                contact_form_title: "Send a Message", contact_success: "Message sent successfully to Developer!",
+                contact_l1: "Full Name", contact_l2: "Email Address", contact_l3: "Subject", contact_l4: "Message",
+                contact_opt1: "Internship Feedback", contact_opt2: "Web Development Inquiry", contact_opt3: "Fan Community Suggestion",
+                contact_btn: "Submit Message", contact_sending: "Sending...",
+
+                footer_desc: "Celebrating the pinnacle of sports leadership and cinematic influence. A tribute to the inspirations of millions.",
+                footer_links: "Quick Links", f_link1: "Home Portal", f_link2: "MS Dhoni Legacy", f_link3: "Thalapathy Cinematic", f_link4: "Hall of Fame",
+                footer_dev: "Developer Info", f_dev1: "SRMIST - Artificial Intelligence", f_dev2: "GitHub Profile", f_dev3: "LinkedIn Profile",
+                f_disc_title: "Disclaimer:", f_disc_text: "This is a fan-created educational website developed for internship and learning purposes only. All trademarks, logos, images, and media related to MS Dhoni, Chennai Super Kings, Thalapathy Vijay, and TVK belong to their respective owners. This website is not officially affiliated with any individual, organization, sports franchise, or political party.",
+                f_rights: "All conceptual rights reserved."
+            },
+            ta: {
+                nav_sub: "சிறப்பு & பெருமை",
+                nav_home: "முகப்பு", nav_about: "பற்றி", nav_dhoni: "எம்.எஸ் தோனி", nav_vijay: "தளபதி", nav_legacy: "புகழ் கூடம்", nav_contact: "தொடர்பு",
+                
+                tagline: "சிறப்பு, தலைமைத்துவம் மற்றும் தமிழ் பெருமையை கொண்டாடுகிறோம்",
+                d_team: "சென்னை சூப்பர் கிங்ஸ்",
+                d_title: "கேப்டன்.<br>தலைவர்.<br><span class='text-brand-yellow'>லெஜண்ட்.</span>",
+                d_desc: "இந்திய கிரிக்கெட்டை மாற்றி, சிஎஸ்கே மூலம் ஒரு சாம்ராஜ்யத்தை உருவாக்கியவர். அமைதி மற்றும் செயல்பாட்டின் ஒரு மாஸ்டர்கிளாஸ்.",
+                d_btn: "தோனியை அறிய <i class='fas fa-chevron-right text-xs'></i>",
+                v_tag: "தமிழ் சினிமா ஐகான்",
+                v_title: "நடிகர்.<br>உத்வேகம்.<br><span class='text-brand-red'>ஐகான்.</span>",
+                v_desc: "சினிமா, கடின உழைப்பு மற்றும் அர்ப்பணிப்பு மூலம் தலைமுறைகளை ஊக்கப்படுத்திய கலைஞர். மக்கள் ஈர்ப்பு மற்றும் கலாச்சார தாக்கத்தின் பயணம்.",
+                v_btn: "<i class='fas fa-chevron-left text-xs hidden md:block'></i> விஜய்யை அறிய <i class='fas fa-chevron-right text-xs md:hidden'></i>",
+                scroll: "கீழே செல்லவும்",
+
+                about_title: "நமது <span class='text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red'>நோக்கம்</span>",
+                about_desc: "தமிழ்நாட்டின் கலாச்சாரத்தை வடிவமைத்து உலக ரசிகர்களை ஊக்குவிக்கும் விளையாட்டுத் தலைமை மற்றும் சினிமா செல்வாக்கின் உச்சத்தை கொண்டாடுகிறோம்.",
+                about_c1_title: "இணையதளத்தின் நோக்கம்",
+                about_c1_desc: "எம்.எஸ் தோனி மற்றும் தளபதி விஜய்யின் மகத்தான தாக்கத்தை விவரிக்கும் பிரீமியம் கல்வி தளமாக செயல்படுவது. தலைமைத்துவம், உறுதித்தன்மை மற்றும் மக்களின் ஈர்ப்பு குறித்த பாடங்களை நாங்கள் பகுப்பாய்வு செய்கிறோம்.",
+                about_c2_title: "எங்கள் பார்வை",
+                about_c2_desc: "பன்முகப்பட்ட ரசிகர்களை உத்வேகத்தின் குடையின் கீழ் இணைப்பது. இவர்களின் மகத்துவத்திற்கான இணையாகப் பயணிக்கும் பாதையைக் காட்டுவதன் மூலம், இளைஞர்களை ஊக்கப்படுத்துவதே எங்கள் நோக்கம்.",
+                about_c3_title: "தமிழ் பெருமை",
+                about_c3_desc: "வெவ்வேறு பின்னணிகளில் இருந்து வந்தாலும், இரு ஐகான்களும் தமிழ்நாட்டின் தத்தெடுக்கப்பட்ட மகன்களாக மாறிவிட்டனர். இவர்கள் சென்னையின் உணர்வை பிரதிபலிக்கிறார்கள்.",
+                about_notice_title: "பயிற்சி திட்ட பின்னணி",
+                about_notice_desc: "எம். மாதேஸ்வரன் அவர்களால் உருவாக்கப்பட்ட இந்த தளம், நவீன வலை மேம்பாடு மற்றும் UI/UX வடிவமைப்பை வெளிப்படுத்தும் ஊடாடும் திட்டமாகும்.",
+
+                d_hero_sub: "மஞ்சள் ஆதிக்கத்தின் சிற்பி",
+                d_journey_title: "கிரிக்கெட் பயணம்",
+                d_t1_tag: "ஆரம்பகால வாழ்க்கை", d_t1_title: "டிக்கெட் சேகரிப்பாளர் முதல் கிரிக்கெட் வீரர் வரை", d_t1_desc: "ராஞ்சி நகரத்தில் இருந்து கரக்பூரில் TTE ஆக பணிபுரிந்து, தனது அபாரமான பேட்டிங் திறமையால் தேசிய அளவில் நுழைந்தது வரை.",
+                d_t2_tag: "2007 - 2013", d_t2_title: "ஐசிசி (ICC) கோப்பைகள்", d_t2_desc: "மூன்று முக்கிய ஐசிசி கோப்பைகளை வென்ற ஒரே கேப்டன்: டி20 உலகக் கோப்பை, ஒருநாள் உலகக் கோப்பை, மற்றும் சாம்பியன்ஸ் டிராபி.",
+                d_t3_tag: "2008 - இன்று", d_t3_title: "சிஎஸ்கே (CSK) மரபு & 5 கோப்பைகள்", d_t3_desc: "ஐபிஎல் வரலாற்றில் மிகவும் சீரான அணியை உருவாக்கி, பல அற்புதமான வெற்றிகளுடன் 5 ஐபிஎல் கிரீடங்களை வென்றார்.",
+                d_lead_title: "தலைமைத்துவ பாடம்",
+                d_l1_title: "நெருக்கடியில் அமைதி", d_l1_desc: "\"கேப்டன் கூல்\" ஆளுமை. நெருக்கடியை உள்வாங்கி, அணியினரை சுதந்திரமாக செயல்பட வைத்து கடைசி ஓவர் வெற்றிகளை தேடித்தந்தது.",
+                d_l2_title: "வியூக உள்ளுணர்வு", d_l2_desc: "சேப்பாக்கத்தில் ஸ்பின் வியூகங்களை கையாள்வது. தரவுகளை விட தனது உள்ளுணர்வை நம்பி முடிவெடுக்கும் திறன்.",
+                d_l3_title: "அணியை உருவாக்குதல்", d_l3_desc: "வீரர்கள் தோல்வியடையும் போது அவர்களை ஆதரிப்பது, சரியான பாத்திரங்களை வழங்குவது, மற்றும் பல வீரர்களை மேட்ச்-வின்னர்களாக மாற்றியது.",
+                d_posters_title: "ஐகானிக் போஸ்டர்கள்",
+                d_p1_tag: "தி பினிஷர்", d_p1_title: "ஸ்ட்ரைக் ரேட் 135.9",
+                d_p2_tag: "கேப்டன் கூல்", d_p2_title: "7 = மரபு",
+
+                v_hero_sub: "முழுமையான மாஸ் ஐகான்",
+                v_journey_title: "சினிமா பயணம்",
+                v_t1_tag: "ஆரம்ப காலம்", v_t1_title: "காதல் நாயகனின் எழுச்சி", v_t1_desc: "ஆரம்பகாலப் போராட்டங்களுடன் தொடங்கி, பூவே உனக்காக, காதலுக்கு மரியாதை போன்ற படங்களால் குடும்ப ரசிகர்களை வென்றார்.",
+                v_t2_tag: "பரிணாம வளர்ச்சி", v_t2_title: "கில்லி & ஆக்‌ஷன் சகாப்தம்", v_t2_desc: "முழுக்க ஆக்‌ஷன் ஸ்டாராக மாறினார். பாக்ஸ் ஆபிஸ் சாதனைகளை படைத்து 'தளபதி' என்ற தனித்துவமான இடத்தை உருவாக்கினார்.",
+                v_t3_tag: "இன்று வரை", v_t3_title: "பாக்ஸ் ஆபிஸ் சக்கரவர்த்தி", v_t3_desc: "தொடர்ச்சியாக மெகா ஹிட் படங்களை (தெறி, மெர்சல், லியோ) வழங்கி, இந்திய சினிமாவில் மிகப்பெரிய ரசிகர் பட்டாளத்தை கொண்டுள்ளார்.",
+                v_impact_title: "தாக்கம் & தலைமைத்துவம்",
+                v_i1_title: "சமூக பங்களிப்புகள்", v_i1_desc: "தனது பிரம்மாண்டமான ரசிகர் மன்றம் மூலம், தமிழ்நாடு முழுவதும் ரத்த தானம், கல்வி உதவி, மற்றும் பேரிடர் நிவாரண பணிகளை மேற்கொண்டுள்ளார்.",
+                v_i2_title: "இளைஞர்களின் குரல்", v_i2_desc: "திரைப்பட இசை வெளியீட்டு விழாக்கள் மற்றும் படங்கள் மூலம் கடின உழைப்பு, எதிர்மறையை தவிர்ப்பது குறித்து வலுவான அறிவுரைகளை வழங்குகிறார்.",
+                v_tvk_title: "தமிழக வெற்றிக் கழகம் (TVK)", v_tvk_desc: "தளபதியின் பயணத்தில் அடுத்த அத்தியாயம் திரையிலிருந்து மக்கள் சேவைக்கு மாறுகிறது. தமிழ்நாட்டில் சமத்துவம் மற்றும் கல்வியை மையமாகக் கொண்டு அரசியல் மாற்றத்திற்காக TVK உருவானது.", v_tvk_tag: "புதிய தலைமை சகாப்தம்",
+                v_posters_title: "சினிமா போஸ்டர்கள்",
+                v_p1_tag: "மில்லியன் மக்களின் தலைவர்", v_p1_title: "எதிர்மறையை தவிர்த்துவிடு",
+                v_p2_tag: "மாஸ் ஐகான்", v_p2_title: "பிளாக்பஸ்டர்",
+
+                hof_title: "<span class='text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red'>புகழ்</span> கூடம்",
+                hof_desc: "இரண்டு பிரம்மாண்டமான களங்களில் மறுக்க முடியாத மகத்துவத்தின் இணைகள்.",
+                hof_csk_title: "சிஎஸ்கே மரபு", hof_csk_desc: "ஐபிஎல் வரலாற்றில் நிலையான அணியின் சிற்பி.<br>விளையாட்டைக் கடந்து சென்னையுடன் ஒரு பிணைப்பை உருவாக்கியவர்.",
+                hof_stat_1: "ஐபிஎல் கோப்பைகள்", hof_stat_2: "ஐபிஎல் இறுதிப்போட்டிகள்", hof_stat_3: "கேப்டனாக போட்டிகள்",
+                hof_mass_title: "மாஸ் மரபு", hof_mass_desc: "தமிழ் சினிமா வரலாற்றில் மிகவும் உணர்ச்சிமிக்க ரசிகர்களை கொண்டிருப்பவர்.<br>மூன்று தசாப்தங்களாக பாக்ஸ் ஆபிஸ் சாதனைகளை அமைத்தவர்.",
+                hof_stat_4: "முக்கிய திரைப்படங்கள்", hof_stat_5: "வென்ற விருதுகள்", hof_stat_6: "ஆண்டுகள் என்டர்டெயின்மென்ட்",
+                hof_core_title: "முக்கிய பண்புகள்",
+                hof_c1_title: "அர்ப்பணிப்பு & கடின உழைப்பு", hof_c1_desc: "இரு ஐகான்களும் எளிமையான தொடக்கத்திலிருந்து உயர்ந்தவர்கள். தோனியின் தொடர்ச்சியான பயிற்சி; விமர்சனங்களை மீறி நடனத்திலும் நடிப்பிலும் விஜய்யின் அர்ப்பணிப்பு.",
+                hof_c2_title: "விமர்சனங்களை கையாளுதல்", hof_c2_desc: "\"பேட் பேசட்டும்\" மற்றும் \"எதிர்மறையை தவிர்த்துவிடு\". இருவரும் கடுமையான விமர்சனங்களை எதிர்கொண்டாலும், தங்கள் பிரம்மாண்ட வெற்றியின் மூலம் பதிலளித்தனர்.",
+                hof_c3_title: "மக்கள் ஈர்ப்பு (Mass Appeal)", hof_c3_desc: "ஒரு மைதானம் அல்லது திரையரங்கின் கவனத்தை உடனடியாக ஈர்க்கும் திறன். தோனி களமிறங்கும் போதும், விஜய்யின் இன்ட்ரோ பாடலின் போதும் அரங்கம் அதிரும்.",
+
+                contact_title: "டெவலப்பர் <span class='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500'>விவரம்</span>",
+                contact_desc: "இந்த பயிற்சி திட்டம் அல்லது வலைத்தள வடிவமைப்பு தொடர்பாக தொடர்பு கொள்ளவும்.",
+                contact_badge: "AI & Web Intern", contact_role: "மாணவர் | செயற்கை நுண்ணறிவு",
+                contact_uni: "எஸ்ஆர்எம் (SRM) அறிவியல் மற்றும் தொழில்நுட்ப நிறுவனம்", contact_loc: "சென்னை, தமிழ்நாடு, இந்தியா", contact_port: "போர்ட்ஃபோலியோ",
+                contact_form_title: "செய்தி அனுப்பவும்", contact_success: "செய்தி டெவலப்பருக்கு வெற்றிகரமாக அனுப்பப்பட்டது!",
+                contact_l1: "முழு பெயர்", contact_l2: "மின்னஞ்சல்", contact_l3: "தலைப்பு", contact_l4: "செய்தி",
+                contact_opt1: "திட்டத்தின் கருத்துக்கள்", contact_opt2: "வலை மேம்பாடு தொடர்பான கேள்வி", contact_opt3: "ரசிகர் மன்றத்தின் ஆலோசனை",
+                contact_btn: "செய்தியை அனுப்பு", contact_sending: "அனுப்பப்படுகிறது...",
+
+                footer_desc: "விளையாட்டுத் தலைமை மற்றும் சினிமா செல்வாக்கின் உச்சத்தை கொண்டாடுகிறோம். மில்லியன் மக்களின் உத்வேகத்திற்கு ஒரு காணிக்கை.",
+                footer_links: "விரைவு இணைப்புகள்", f_link1: "முகப்பு", f_link2: "எம்.எஸ் தோனி", f_link3: "தளபதி விஜய்", f_link4: "புகழ் கூடம்",
+                footer_dev: "டெவலப்பர் விவரம்", f_dev1: "SRMIST - செயற்கை நுண்ணறிவு", f_dev2: "கிட்ஹப் (GitHub)", f_dev3: "லிங்க்ட்இன் (LinkedIn)",
+                f_disc_title: "பொறுப்பு துறப்பு:", f_disc_text: "இது பயிற்சி மற்றும் கல்வி நோக்கங்களுக்காக உருவாக்கப்பட்ட ரசிகர்களின் இணையதளம். எம்.எஸ் தோனி, சிஎஸ்கே, தளபதி விஜய் மற்றும் TVK தொடர்பான அனைத்து தகவல்களும் உரிமையாளர்களுக்கே சொந்தம். இது அதிகாரப்பூர்வ தளம் அல்ல.",
+                f_rights: "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."
+            },
+            hi: {
+                nav_sub: "उत्कृष्टता और गौरव",
+                nav_home: "होम", nav_about: "हमारे बारे में", nav_dhoni: "एमएस धोनी", nav_vijay: "थलपति", nav_legacy: "हॉल ऑफ फेम", nav_contact: "संपर्क",
+                
+                tagline: "उत्कृष्टता, नेतृत्व और तमिल गौरव का जश्न",
+                d_team: "चेन्नई सुपर किंग्स",
+                d_title: "कप्तान.<br>नेता.<br><span class='text-brand-yellow'>लीजेंड.</span>",
+                d_desc: "वह व्यक्ति जिसने भारतीय क्रिकेट को बदल दिया और सीएसके के माध्यम से एक साम्राज्य बनाया। शांति और निष्पादन की मिसाल।",
+                d_btn: "धोनी के बारे में जानें <i class='fas fa-chevron-right text-xs'></i>",
+                v_tag: "तमिल सिनेमा आइकन",
+                v_title: "अभिनेता.<br>प्रेरणा.<br><span class='text-brand-red'>आइकन.</span>",
+                v_desc: "सिनेमा, कड़ी मेहनत और समर्पण के माध्यम से पीढ़ियों को प्रेरित करने वाले कलाकार। जन आकर्षण और सांस्कृतिक प्रभाव की यात्रा।",
+                v_btn: "<i class='fas fa-chevron-left text-xs hidden md:block'></i> विजय के बारे में जानें <i class='fas fa-chevron-right text-xs md:hidden'></i>",
+                scroll: "स्क्रॉल करें",
+
+                about_title: "हमारा <span class='text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red'>मिशन</span>",
+                about_desc: "खेल नेतृत्व और सिनेमाई प्रभाव के शिखर का जश्न मनाते हुए जो तमिलनाडु की संस्कृति को आकार देता है और वैश्विक दर्शकों को प्रेरित करता है।",
+                about_c1_title: "वेबसाइट का उद्देश्य",
+                about_c1_desc: "एक प्रीमियम शैक्षिक मंच के रूप में काम करना जो एमएस धोनी और थलपति विजय के स्मारकीय प्रभाव का वर्णन करता है। हम नेतृत्व, लचीलेपन और जन आकर्षण में जीवन के सबक निकालने के लिए उनकी यात्रा का विश्लेषण करते हैं।",
+                about_c2_title: "हमारा दृष्टिकोण",
+                about_c2_desc: "प्रेरणा की एक आम छतरी के नीचे विविध प्रशंसकों को एकजुट करना। महानता के उनके समानांतर रास्तों का प्रदर्शन करके, हमारा उद्देश्य युवाओं को विनम्रता और कड़ी मेहनत के साथ उत्कृष्टता प्राप्त करने के लिए प्रेरित करना है।",
+                about_c3_title: "तमिल गौरव",
+                about_c3_desc: "विभिन्न पृष्ठभूमियों से होने के बावजूद, दोनों आइकन तमिलनाडु के गोद लिए हुए बेटे बन गए हैं। वे चेन्नई की भावना का प्रतिनिधित्व करते हैं।",
+                about_notice_title: "इंटर्नशिप प्रोजेक्ट संदर्भ",
+                about_notice_desc: "एम. मादेश्वरन द्वारा विकसित, यह पोर्टल एक इंटरेक्टिव शोकेस के रूप में डिज़ाइन किया गया है जो आधुनिक वेब विकास, यूआई / यूएक्स डिज़ाइन का प्रदर्शन करता है।",
+
+                d_hero_sub: "येलो डोमिनेंस के वास्तुकार",
+                d_journey_title: "क्रिकेट यात्रा",
+                d_t1_tag: "प्रारंभिक जीवन", d_t1_title: "टिकट कलेक्टर से क्रिकेटर", d_t1_desc: "रांची के एक छोटे से शहर से, खड़गपुर में TTE के रूप में काम करने से लेकर, राष्ट्रीय चेतना में प्रवेश करने तक।",
+                d_t2_tag: "2007 - 2013", d_t2_title: "ICC ट्रॉफी स्वीप", d_t2_desc: "तीनों प्रमुख ICC सफेद गेंद वाली ट्राफियां जीतने वाले एकमात्र कप्तान: T20 विश्व कप, ODI विश्व कप और चैंपियंस ट्रॉफी।",
+                d_t3_tag: "2008 - वर्तमान", d_t3_title: "CSK लिगेसी और 5 खिताब", d_t3_desc: "IPL इतिहास में सबसे सुसंगत फ्रेंचाइजी का निर्माण, \"डैड्स आर्मी\" का नेतृत्व करते हुए 5 IPL ताज जीते।",
+                d_lead_title: "नेतृत्व मास्टरक्लास",
+                d_l1_title: "दबाव में शांति", d_l1_desc: "\"कैप्टन कूल\" व्यक्तित्व। दबाव को अवशोषित करना ताकि टीम स्वतंत्र रूप से प्रदर्शन कर सके।",
+                d_l2_title: "रणनीतिक प्रवृत्ति", d_l2_desc: "चेपॉक में स्पिन चोक में महारत हासिल करना। शुद्ध डेटा पर अपनी अंतरात्मा की भावना पर भरोसा करना।",
+                d_l3_title: "टीम निर्माण", d_l3_desc: "विफल होने पर खिलाड़ियों का समर्थन करना, स्पष्ट भूमिकाएँ सौंपना, और दिग्गजों को मैच-विजेता में बदलना।",
+                d_posters_title: "आइकॉनिक पोस्टर",
+                d_p1_tag: "द फिनिशर", d_p1_title: "स्ट्राइक रेट 135.9",
+                d_p2_tag: "कैप्टन कूल", d_p2_title: "7 = लिगेसी",
+
+                v_hero_sub: "द एब्सोल्यूट मास आइकन",
+                v_journey_title: "सिनेमाई यात्रा",
+                v_t1_tag: "प्रारंभिक करियर", v_t1_title: "रोमांटिक हीरो का उदय", v_t1_desc: "शुरुआती संघर्षों के साथ शुरू होकर, ब्लॉकबस्टर के साथ अपना पैर जमाना, एक बड़े पारिवारिक दर्शक वर्ग की स्थापना करना।",
+                v_t2_tag: "परिवर्तन", v_t2_title: "गिल्ली और एक्शन एरा", v_t2_desc: "एक एक्शन स्टार में बदलना। बॉक्स ऑफिस रिकॉर्ड स्थापित करना और 'थलपति' व्यक्तित्व स्थापित करना।",
+                v_t3_tag: "वर्तमान दिन", v_t3_title: "बॉक्स ऑफिस सम्राट", v_t3_desc: "लगातार हिट फिल्में (थेरी, मर्सल, लियो) देना। भारतीय सिनेमा में सबसे बड़े और सबसे वफादार प्रशंसक अड्डों में से एक की कमान।",
+                v_impact_title: "प्रभाव और नेतृत्व",
+                v_i1_title: "सामाजिक योगदान", v_i1_desc: "अपने विशाल प्रशंसक नेटवर्क के माध्यम से, तमिलनाडु में रक्तदान अभियान, शैक्षिक सहायता और आपदा राहत का आयोजन।",
+                v_i2_title: "युवाओं की आवाज", v_i2_desc: "मूवी ऑडियो लॉन्च के माध्यम से कड़ी मेहनत, नकारात्मकता को नजरअंदाज करने और माता-पिता का सम्मान करने पर शक्तिशाली सलाह देना।",
+                v_tvk_title: "तमिलगा वेत्री कज़गम (TVK)", v_tvk_desc: "थलपति की यात्रा का अगला अध्याय स्क्रीन से जनसेवा में परिवर्तित होता है। TVK का गठन तमिलनाडु में राजनीतिक परिवर्तन के लिए किया गया था।", v_tvk_tag: "नेतृत्व का एक नया युग",
+                v_posters_title: "सिनेमाई पोस्टर",
+                v_p1_tag: "लाखों के नेता", v_p1_title: "नकारात्मकता को नज़रअंदाज़ करें",
+                v_p2_tag: "मास आइकन", v_p2_title: "ब्लॉकबस्टर",
+
+                hof_title: "हॉल ऑफ <span class='text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-brand-red'>फेम</span>",
+                hof_desc: "दो विशाल डोमेन में फैली निर्विवाद महानता की समानताएं।",
+                hof_csk_title: "CSK की लिगेसी", hof_csk_desc: "IPL इतिहास में सबसे सुसंगत फ्रेंचाइजी के वास्तुकार।<br>चेन्नई के साथ एक बंधन बनाना जो खेल से परे है।",
+                hof_stat_1: "IPL खिताब", hof_stat_2: "IPL फाइनल", hof_stat_3: "कप्तान के रूप में मैच",
+                hof_mass_title: "मास लिगेसी", hof_mass_desc: "तमिल सिनेमा के इतिहास में सबसे भावुक प्रशंसक आधार की कमान।<br>तीन दशकों से बॉक्स ऑफिस बेंचमार्क स्थापित करना।",
+                hof_stat_4: "फीचर फिल्में", hof_stat_5: "पुरस्कार जीते", hof_stat_6: "मनोरंजन के वर्ष",
+                hof_core_title: "मुख्य मूल्य",
+                hof_c1_title: "समर्पण और कड़ी मेहनत", hof_c1_desc: "दोनों आइकन मामूली शुरुआत से उठे। स्टंप के पीछे धोनी का निरंतर अभ्यास; शुरुआती आलोचनाओं के बावजूद विजय का समर्पण।",
+                hof_c2_title: "आलोचना को संभालना", hof_c2_desc: "\"बल्ले को बोलने दें।\" और \"नकारात्मकता को नज़रअंदाज़ करें।\" दोनों ने भारी जांच का सामना किया है लेकिन शब्दों के बजाय अपनी सफलता के माध्यम से जवाब दिया।",
+                hof_c3_title: "जन आकर्षण (Mass Appeal)", hof_c3_desc: "स्टेडियम या सिनेमा थियेटर का ध्यान तुरंत आकर्षित करने की क्षमता। जब धोनी बल्लेबाजी करने उतरते हैं, या विजय का इंट्रो बजता है, तो मैदान कांप उठता है।",
+
+                contact_title: "डेवलपर <span class='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500'>प्रोफ़ाइल</span>",
+                contact_desc: "इस इंटर्नशिप प्रोजेक्ट या वेब विकास पूछताछ के संबंध में संपर्क करें।",
+                contact_badge: "एआई और वेब इंटर्न", contact_role: "छात्र | कृत्रिम बुद्धिमत्ता",
+                contact_uni: "एसआरएम विज्ञान और प्रौद्योगिकी संस्थान", contact_loc: "चेन्नई, तमिलनाडु, भारत", contact_port: "पोर्टफोलियो",
+                contact_form_title: "एक संदेश भेजें", contact_success: "डेवलपर को संदेश सफलतापूर्वक भेजा गया!",
+                contact_l1: "पूरा नाम", contact_l2: "ईमेल पता", contact_l3: "विषय", contact_l4: "संदेश",
+                contact_opt1: "इंटर्नशिप फीडबैक", contact_opt2: "वेब विकास पूछताछ", contact_opt3: "प्रशंसक समुदाय सुझाव",
+                contact_btn: "संदेश भेजें", contact_sending: "भेजा जा रहा है...",
+
+                footer_desc: "खेल नेतृत्व और सिनेमाई प्रभाव के शिखर का जश्न। लाखों की प्रेरणा को श्रद्धांजलि।",
+                footer_links: "महत्वपूर्ण लिंक", f_link1: "होम", f_link2: "एमएस धोनी लिगेसी", f_link3: "थलपति सिनेमा", f_link4: "हॉल ऑफ फेम",
+                footer_dev: "डेवलपर जानकारी", f_dev1: "SRMIST - कृत्रिम बुद्धिमत्ता", f_dev2: "GitHub प्रोफ़ाइल", f_dev3: "LinkedIn प्रोफ़ाइल",
+                f_disc_title: "अस्वीकरण:", f_disc_text: "यह इंटर्नशिप और सीखने के उद्देश्यों के लिए विकसित एक प्रशंसक-निर्मित शैक्षिक वेबसाइट है। धोनी, सीएसके, विजय और टीवीके से संबंधित सभी मीडिया उनके संबंधित स्वामियों के हैं।",
+                f_rights: "सभी वैचारिक अधिकार सुरक्षित हैं।"
+            }
+        };
+
+        function changeLanguage(lang) {
+            // Update Active Button Styling
+            const langs = ['en', 'ta', 'hi'];
+            langs.forEach(l => {
+                const btns = document.querySelectorAll(`.lang-btn-${l}`);
+                btns.forEach(btn => {
+                    if(l === lang) {
+                        btn.classList.add('bg-white', 'text-black');
+                        btn.classList.remove('text-gray-400', 'hover:text-white', 'border', 'border-gray-700', 'hover:bg-white/10');
+                    } else {
+                        btn.classList.remove('bg-white', 'text-black');
+                        btn.classList.add('text-gray-400');
+                        // Add specific mobile vs desktop unselected styling back
+                        if (btn.classList.contains('px-4')) {
+                            btn.classList.add('border', 'border-gray-700', 'hover:bg-white/10');
+                        } else {
+                            btn.classList.add('hover:text-white');
+                        }
+                    }
+                });
+            });
+
+            // Swap Texts
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    // GSAP Fade effect for smooth text transition
+                    gsap.to(el, {
+                        opacity: 0, 
+                        duration: 0.2, 
+                        onComplete: () => {
+                            el.innerHTML = translations[lang][key];
+                            gsap.to(el, {opacity: 1, duration: 0.3});
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
