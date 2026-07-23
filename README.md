@@ -146,7 +146,3 @@ https://github.com/Madesh2247
 If you like this project, please consider giving it a **⭐ Star** on GitHub.
 
 ---
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
